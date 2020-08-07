@@ -1,6 +1,6 @@
 # shoot
 
-A Clojure library inspired by python-fire
+Easy dispatcher for clojure functions, heavily inspired by python-fire.
 
 ## Usage
 
