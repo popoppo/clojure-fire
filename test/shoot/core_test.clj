@@ -167,7 +167,7 @@
        {:func nil :positional-args '({:a 1} [1 2 3]) :options {}} ["{:a 1}" "[1 2 3]"]
        {:func nil :positional-args '({:a {:b {:c 1}}}) :options {}} ["{:a {:b {:c 1}}}"]
        {:func nil :positional-args '("},@_@,{") :options {}} ["},@_@,{"]
-       {:func nil :positional-args '(---c) :options {:a [] :b []}} ["-a" "--b" "---c"]
+       {:func nil :positional-args '(---c) :options {:a nil :b nil}} ["-a" "--b" "---c"]
        {:func nil :positional-args '() :options {:a 1 :b '(1 2 3) :c '(4 5 6)}} ["-a=1" "-b=[1 2 3]" "-c=(4 5 6)"]
        {:func nil :positional-args '() :options {:a nil :b " "}} ["-a= " "--b=\" \""]
        {:func nil :positional-args '() :options {:a '(1 3) :b '(2 [4 5 6])}} ["-a=1" "--b=2" "--a=3" "-b=[4 5 6]"]))))
