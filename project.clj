@@ -6,10 +6,10 @@
 
   :dependencies [[org.clojure/clojure "1.10.1"]]
 
-  :deploy-repositories [["clojars" {:url "https://clojars.org/repo"
-                             :username :env/clojars_username
-                             :password :env/clojars_password
-                             :sign-releases false}]]
+  :deploy-repositories [["clojars" {:url "https://repo.clojars.org"
+                                  :username :env/clojars_username
+                                  :password :env/clojars_password
+                                  :sign-releases false}]]
 
   :repl-options {:init-ns shoot.core}
 
