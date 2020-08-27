@@ -30,4 +30,4 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Deploy to Clojars
-      run: lein deploy clojars
+      run: echo "--$CLOJARS_PASSWORD--" && lein deploy clojars
