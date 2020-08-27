@@ -30,4 +30,4 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Deploy to Clojars
-      run: export CLOJARS_USERNAME=popoppo && export CLOJARS_PASSWORD=${{ secrets.CLOJARS_DEPLOY_TOKEN }} && lein deploy clojars
+      run: lein deploy clojars
