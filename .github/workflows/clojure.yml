@@ -5,6 +5,7 @@ on:
     branches:
       - dev
       - master
+      - test-*
   pull_request:
     branches:
       - dev
@@ -23,7 +24,6 @@ jobs:
   deploy_to_clojars:
     needs: unit_test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
     env:
       CLOJARS_USERNAME: popoppo
       CLOJARS_PASSWORD: ${{ secrets.clojars_deploy_token }}
