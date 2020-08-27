@@ -2,18 +2,32 @@ name: Clojure CI
 
 on:
   push:
-    branches: [ dev ]
+    branches:
+      - dev
+      - master
   pull_request:
-    branches: [ dev ]
+    branches:
+      - dev
+      - master
 
 jobs:
-  build:
-
+  unit_test:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Install dependencies
       run: lein deps
     - name: Run tests
       run: lein test
+
+  deploy_to_clojars:
+    needs: unit_test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    env:
+      CLOJARS_USERNAME: popoppo
+      CLOJARS_PASSWORD: ${{ secrets.clojars_deploy_token }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Deploy to Clojars
+      run: lein deploy clojars
