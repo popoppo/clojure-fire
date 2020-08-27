@@ -45,15 +45,15 @@
    arg-list))
 
 (defn parse-command-line-args
-  [args-has-func-name? & {:keys [custom-pattern-list]
-                          :or {custom-pattern-list default-parsers}}]
+  [args-has-func-name? & {:keys [custom-parsers]
+                          :or {custom-parsers default-parsers}}]
   (let [cl-args (cl-args-without-file-name)
         opts (parse-arg-list (if args-has-func-name?
                                (rest cl-args)
                                cl-args))
         fn-symbol (when args-has-func-name?
                     (symbol (first cl-args)))
-        tf #(transform custom-pattern-list %)
+        tf #(transform custom-parsers %)
         tf-for-map #(let [[k vs] %
                           new-vs (map (fn [v] (tf v)) vs)]
                       (hash-map k (condp = (count new-vs)
@@ -64,7 +64,7 @@
         options (->> (dissoc opts :*)
                      (map tf-for-map)
                      (apply merge {}))] ;; {} is to avoid nil
-    {:func fn-symbol
+    {:fn fn-symbol
      :positional-args positional-args
      :options options}))
 
@@ -127,25 +127,25 @@
 (defn shoot*
   "Main part of shoot."
   ([]
-   (let [{:keys [func positional-args options]} (parse-command-line-args true)]
+   (let [{:keys [fn positional-args options]} (parse-command-line-args true)]
      (if (every? nil? [positional-args options])
        (println "function-name must be specified")
-       (apply-func func positional-args options))))
+       (apply-func fn positional-args options))))
   ([arg]
    (condp #(%1 %2) arg
-     map? (let [custom-pattern-list (or (:parsers arg) default-parsers)
-                cl-has-func-name? (if (:func arg) false true)
+     map? (let [custom-parsers (or (:parsers arg) default-parsers)
+                cl-has-func-name? (if (:fn arg) false true)
                 parsed (parse-command-line-args cl-has-func-name?
-                                                :custom-pattern-list custom-pattern-list)
-                {:keys [func positional-args options]} parsed
-                func-name (if func func (symbol (:func arg)))]
+                                                :custom-parsers custom-parsers)
+                {:keys [fn positional-args options]} parsed
+                func-name (if fn fn (symbol (:fn arg)))]
             (if (nil? func-name)
               (println "function-name must be specified")
               (apply-func func-name positional-args options)))
      (let [{:keys [positional-args options]} (parse-command-line-args false)]
        (apply-func (symbol arg) positional-args options))))
   ([func-name parsers]
-   (shoot* {:func func-name :parsers parsers})))
+   (shoot* {:fn func-name :parsers parsers})))
 
 (defn shoot
   "Entry point of shoot."

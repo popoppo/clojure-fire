@@ -66,15 +66,15 @@
                                  (do
                                    (set! *command-line-args* args)
                                    (shoot opts)))
-          (hello) {:func 'hello} [] ;; (shoot 'hello)
-          (hello-world) {:func 'hello-world} []
-          (hello-world :name "Clojure") {:func 'hello-world} [":name" "Clojure"]
-          (add 1 2) {:func 'add} ["1" "2"]
-          (add 1 2 3 4 5) {:func 'add} ["1" "2" "3" "4" "5"]
-          (volume {:x 2 :y 3 :z 4}) {:func 'volume} ["{:x 2 :y 3 :z 4}"]
-          (is-that-true? true) {:func 'is-that-true?} ["true"]
-          (is-that-true? false) {:func 'is-that-true?} ["false"]
-          (is-that-true? true) {:func 'is-that-true?} ["False"]))
+          (hello) {:fn 'hello} [] ;; (shoot 'hello)
+          (hello-world) {:fn 'hello-world} []
+          (hello-world :name "Clojure") {:fn 'hello-world} [":name" "Clojure"]
+          (add 1 2) {:fn 'add} ["1" "2"]
+          (add 1 2 3 4 5) {:fn 'add} ["1" "2" "3" "4" "5"]
+          (volume {:x 2 :y 3 :z 4}) {:fn 'volume} ["{:x 2 :y 3 :z 4}"]
+          (is-that-true? true) {:fn 'is-that-true?} ["true"]
+          (is-that-true? false) {:fn 'is-that-true?} ["false"]
+          (is-that-true? true) {:fn 'is-that-true?} ["False"]))
 
       (testing "With custom parsers"
         (let [enhanced-parsers (concat
@@ -97,7 +97,7 @@
             (are [orig parsers args] (= orig
                                         (do
                                           (set! *command-line-args* args)
-                                          (shoot {:func 'is-that-true?
+                                          (shoot {:fn 'is-that-true?
                                                   :parsers parsers})))
               (is-that-true? false) enhanced-parsers ["False"]
               (is-that-true? true) wrong-order-parsers ["False"]
@@ -157,22 +157,18 @@
      (are [expected args] (= expected (do
                                         (set! *command-line-args* args)
                                         (parse-command-line-args false)))
-       {:func nil :positional-args '() :options {}} []
-       {:func nil :positional-args '(nil nil) :options {}} [" " "   "] ;; white spaces will be nill
-       {:func nil :positional-args '("   ") :options {}} ["\"   \""] ;; use '"' to pass spaces
-       {:func nil :positional-args '(a) :options {}} ["a"] ;; args will be symbol
-       {:func nil :positional-args '(abc "abc") :options {}} ["abc" "\"abc\""] ;; use '"' for str
-       {:func nil :positional-args '(-1 --1 ---1) :options {}} ["-1" "--1" "---1"]
-       {:func nil :positional-args '(:foo bar) :options {}} [":foo" "bar"]
-       {:func nil :positional-args '({:a 1} [1 2 3]) :options {}} ["{:a 1}" "[1 2 3]"]
-       {:func nil :positional-args '({:a {:b {:c 1}}}) :options {}} ["{:a {:b {:c 1}}}"]
-       {:func nil :positional-args '("},@_@,{") :options {}} ["},@_@,{"]
-       {:func nil :positional-args '(---c) :options {:a nil :b nil}} ["-a" "--b" "---c"]
-       {:func nil :positional-args '() :options {:a 1 :b '(1 2 3) :c '(4 5 6)}} ["-a=1" "-b=[1 2 3]" "-c=(4 5 6)"]
-       {:func nil :positional-args '() :options {:a nil :b " "}} ["-a= " "--b=\" \""]
-       {:func nil :positional-args '() :options {:a '(1 3) :b '(2 [4 5 6])}} ["-a=1" "--b=2" "--a=3" "-b=[4 5 6]"]))))
+       {:fn nil :positional-args '() :options {}} []
+       {:fn nil :positional-args '(nil nil) :options {}} [" " "   "] ;; white spaces will be nill
+       {:fn nil :positional-args '("   ") :options {}} ["\"   \""] ;; use '"' to pass spaces
+       {:fn nil :positional-args '(a) :options {}} ["a"] ;; args will be symbol
+       {:fn nil :positional-args '(abc "abc") :options {}} ["abc" "\"abc\""] ;; use '"' for str
+       {:fn nil :positional-args '(-1 --1 ---1) :options {}} ["-1" "--1" "---1"]
+       {:fn nil :positional-args '(:foo bar) :options {}} [":foo" "bar"]
+       {:fn nil :positional-args '({:a 1} [1 2 3]) :options {}} ["{:a 1}" "[1 2 3]"]
+       {:fn nil :positional-args '({:a {:b {:c 1}}}) :options {}} ["{:a {:b {:c 1}}}"]
+       {:fn nil :positional-args '("},@_@,{") :options {}} ["},@_@,{"]
+       {:fn nil :positional-args '(---c) :options {:a nil :b nil}} ["-a" "--b" "---c"]
+       {:fn nil :positional-args '() :options {:a 1 :b '(1 2 3) :c '(4 5 6)}} ["-a=1" "-b=[1 2 3]" "-c=(4 5 6)"]
+       {:fn nil :positional-args '() :options {:a nil :b " "}} ["-a= " "--b=\" \""]
+       {:fn nil :positional-args '() :options {:a '(1 3) :b '(2 [4 5 6])}} ["-a=1" "--b=2" "--a=3" "-b=[4 5 6]"]))))
 
-(deftest simulating-commands-test
-  (testing "simulate bb")
-  (testing "simulate clj")
-  (testing "simulate lein-exec"))
