@@ -61,7 +61,8 @@ The easiest way is just calling `shoot` in your `*.clj` file.
 ```
 
 Now it's ready to call your functions. Just specify a function name via CLI. (and pass args if needed)  
-(Here, `bb` is used to run built-in sample programs. `BABASHKA_CLASSPATH` should be set properly)
+Here we use a built-in sample program `src/shoot/examples/basics_bb.clj` with bb.   
+`BABASHKA_CLASSPATH=src` should be set before running them.
 
 ```bash
 $ src/shoot/examples/basics_bb.clj hello
@@ -292,7 +293,7 @@ If you want to handle data which contains commas as string, another item should 
 The result should be
 
 ```bash
-$ src/shoot/examples/basic_bb.clj "1,2,3" "\"1,2,3\"" ",,," " " "\" \""
+$ src/shoot/examples/basics_bb.clj "1,2,3" "\"1,2,3\"" ",,," " " "\" \""
 (1,2,3 "1,2,3" ,,, nil  )
 ```
 
@@ -316,7 +317,7 @@ It's also allowed to have no parsers. (don't pass `nil` but a list or vector)
 Then a white space is passed as it is.
 
 ```bash
-# bb -cp src -f src/shoot/examples/hello_bb.clj echo " "
+# src/shoot/examples/basics_bb.clj echo " "
 ( )
 ```
 
