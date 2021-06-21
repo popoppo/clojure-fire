@@ -6,11 +6,12 @@
   (:require [fire.core :refer [fire]]))
 
 (defn hello
-  "Just say hello!!"
+  "Say hello!!"
   []
   "Hello")
 
 (defn hello-world
+  "Target can be spcecified with :name"
   [& {:keys [name]
       :or {name "World"}}]
   (str "Hello " name))
@@ -24,16 +25,11 @@
   (apply * (list* x y vs)))
 
 (defn area
-  "Calc area with x and y"
+  "Calc area from x and y"
   [{:keys [x y]}]
   (* x y))
 
 (defn echo
-  {:fire {:p {:description "Port number"}
-          :q {:description "Quiet mode"}
-          :now {:default
-                #(-> (java.time.ZonedDateTime/now)
-                     (.format (java.time.format.DateTimeFormatter/ofPattern "HH:mm")))}}}
   [& opts]
   (println opts))
 

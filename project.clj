@@ -1,5 +1,5 @@
-(defproject clojure-fire "0.0.1-SNAPSHOT"
-  :description "Making it easier to create CLI in Clojure"
+(defproject org.clojars.popoppo/clojure-fire "0.0.3-SNAPSHOT"
+  :description "Making it easier to run Clojure program"
   :url "https://github.com/popoppo/clojure-fire"
   :license {:name "EPL-2.0"
             :url "https://www.eclipse.org/legal/epl-2.0/"}
@@ -10,8 +10,6 @@
                                     :username :env/clojars_username
                                     :password :env/clojars_password
                                     :sign-releases false}]]
-
-  ;; :repl-options {:init-ns clojure-fire.core}
 
   :plugins []
 
