@@ -1,18 +1,19 @@
-#!/usr/bin/env bb
+(ns fire.examples.basics
+  (:require
+    [fire.core :refer [fire]]))
 
-;; export BABASHKA_CLASSPATH=src
-
-(ns shoot.examples.basics-bb
-  (:require [shoot.core :refer [shoot]]))
+;; lein exec -p src/clojure_fire/examples/basics.clj
 
 (defn hello
+  "Say hello!!"
   []
-  "Hello")
+  (println "hello"))
 
 (defn hello-world
+  "Target can be spcecified with :name"
   [& {:keys [name]
       :or {name "World"}}]
-  (str "Hello " name))
+  (println "Hello " name))
 
 (defn add
   ([[x y]] (+ x y))
@@ -30,5 +31,6 @@
   [& opts]
   (println opts))
 
-(when-let [v (shoot)]
+(when-let [v (fire)]
   (println v))
+
