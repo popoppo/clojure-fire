@@ -1,6 +1,6 @@
 (ns fire.examples.basics
   (:require
-    [fire.core :refer [fire]]))
+   [fire.core :refer [fire]]))
 
 ;; lein exec -p src/clojure_fire/examples/basics.clj
 
@@ -24,6 +24,7 @@
   (apply * (list* x y vs)))
 
 (defn area
+  "Calc area from x and y"
   [{:keys [x y]}]
   (* x y))
 
