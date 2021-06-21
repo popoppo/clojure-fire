@@ -1,7 +1,7 @@
-(ns shoot.core
+(ns fire.core
   (:require
-   [clojure.edn :as edn]
-   [clojure.string :as str]))
+    [clojure.edn :as edn]
+    [clojure.string :as str]))
 
 (def default-parsers
   [[#".+" #(edn/read-string %)]])
@@ -15,7 +15,8 @@
               (if (re-matches ptrn v)
                 (try
                   (f v) ;; transform
-                  (catch Exception e ;; (prn (.getMessage e))
+                  (catch Exception e
+                    (comment (println (.getMessage e)))
                     v)) ;; return str if transform fails
                 (recur (rest lst)))))))
 
@@ -39,10 +40,11 @@
 (defn parse-arg-list
   [arg-list]
   (reduce
-   (fn [acc v] (->> (parse-value v)
-                    (merge-with into acc)))
-   {}
-   arg-list))
+    (fn [acc v]
+      (->> (parse-value v)
+           (merge-with into acc)))
+    {}
+    arg-list))
 
 (defn parse-command-line-args
   [args-has-func-name? & {:keys [custom-parsers]
@@ -83,8 +85,8 @@
 
                     ;; bb -f or lein exec
                     (or
-                     (System/getProperty "babashka.version")
-                     (System/getenv "LEIN_JAVA_CMD")) *ns* ;; lein
+                      (System/getProperty "babashka.version")
+                      (System/getenv "LEIN_JAVA_CMD")) *ns* ;; lein
 
                     ;; clj -m/--main
                     :else
@@ -95,7 +97,7 @@
                       (symbol (nth run-cmd (inc idx-of-m)))))]
     (-> target-ns
         ns-publics
-        (dissoc 'shoot))))
+        (dissoc 'fire))))
 
 (defn print-func-names
   "Print list of fn names and its doc"
@@ -103,10 +105,12 @@
   (let [fns-map (get-publics)
         fns-info (keep #(let [m (-> % second meta)]
                           (when (:arglists m)
-                            (format "%s %s\n%s\n"
+                            (format "%s %s\n%s"
                                     (:name m)
                                     (:arglists m)
-                                    (or (:doc m) "No dostrings"))))
+                                    (if-let [d (:doc m)]
+                                      (str d "\n")
+                                      ""))))
                        fns-map)]
     (println (str/join "\n" fns-info))))
 
@@ -124,8 +128,8 @@
       (apply (funcs-map func-name) args)
       (println func-name "not found. Speccify one of" func-names))))
 
-(defn shoot*
-  "Main part of shoot."
+(defn fire*
+  "Assumed to be called by 'fire'"
   ([]
    (let [{:keys [fn positional-args options]} (parse-command-line-args true)]
      (if (every? nil? [positional-args options])
@@ -145,13 +149,13 @@
      (let [{:keys [positional-args options]} (parse-command-line-args false)]
        (apply-func (symbol arg) positional-args options))))
   ([func-name parsers]
-   (shoot* {:fn func-name :parsers parsers})))
+   (fire* {:fn func-name :parsers parsers})))
 
-(defn shoot
-  "Entry point of shoot."
+(defn fire
+  "Entry point"
   [& args]
   (if (every? empty? [args (cl-args-without-file-name)])
     (print-func-names)
     (if (seq args)
-      (apply shoot* args)
-      (shoot*))))
+      (apply fire* args)
+      (fire*))))

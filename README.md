@@ -1,6 +1,6 @@
-![Clojure CI](https://github.com/popoppo/shoot/workflows/Clojure%20CI/badge.svg)
+![Clojure CI](https://github.com/popoppo/clojure-fire/workflows/Clojure%20CI/badge.svg)
 
-# shoot
+# clojure-fire
 
 Easy function dispatcher for Clojure, heavily inspired by [python-fire](https://github.com/google/python-fire).
 
@@ -23,12 +23,12 @@ how do you call the function with `args`?
 Parsing `args`? or using [tools.cli](https://github.com/clojure/tools.cli)?  
 Fine, there's no problem.
 
-With `shoot`, you can call the function like this.
+With `fire`, you can call the function like this.
 
 ``` clojure
 (defn -main
   [& args]
-  (shoot))
+  (fire))
 ```
 
 and run it with the function name on CLI.
@@ -38,44 +38,44 @@ $ bb -m <path to file> multiply 2 3 ;; or "clj -m <path to file> ..."
 6
 ```
 
-So, all you need to do is just calling `(shoot)` and passing a function name and args via CLI.  
-`shoot` finds the target function and call it with the given arguments.  
-`shoot` works with `clj`, [lein-exec](https://github.com/kumarshantanu/lein-exec) and [babashka](https://github.com/borkdude/babashka).  
+So, all you need to do is just calling `(fire)` and passing a function name and args via CLI.  
+`fire` finds the target function and call it with the given arguments.  
+`fire` works with `clj`, [lein-exec](https://github.com/kumarshantanu/lein-exec) and [babashka](https://github.com/borkdude/babashka).  
 (Please install them if needed.)
 
 ## Motivation
 When writing CLI tools, I usually use [tools.cli](https://github.com/clojure/tools.cli) to parse arguments. That's great enough.  
 However, I sometimes felt that it's too rich to provide internal tools or tools for myself.  
 In such cases, as I already know what arguments the target function needs, rich parsers or validations are not needed. I just fix parameters and retry when errors/exceptions happen.  
-With `shoot`, you can skip the process of writing argument parsers and can focus on realising your idea.  
+With `fire`, you can skip the process of writing argument parsers and can focus on realising your idea.  
 Of course we Clojurians mainly use REPL to develop tools/apps and have less chance to use CLI,
 but this tool would give you another handy option in your development process.  
 This tool is designed to cover many common cases, but not all. If you need more rich functionality, it's time to use `tools.cli`, I think.
 
 ## Examples
 
-The easiest way is just calling `shoot` in your `*.clj` file.  
+The easiest way is just calling `fire` in your `*.clj` file.  
 
 ```clojure
-(shoot)
+(fire)
 ```
 
 Now it's ready to call your functions. Just specify a function name via CLI. (and pass args if needed)  
-Here we use a built-in sample program `src/shoot/examples/basics_bb.clj` with bb.   
+Here we use a built-in sample program `src/fire/examples/basics_bb.clj` with bb.   
 `BABASHKA_CLASSPATH=src` should be set before running them.
 
 ```bash
-$ src/shoot/examples/basics_bb.clj hello
+$ src/fire/examples/basics_bb.clj hello
 Hello
 
-$ src/shoot/examples/basics_bb.clj hello-world
+$ src/fire/examples/basics_bb.clj hello-world
 Hello World
 ```
 
 Looks good, but what if no function is specified?
 
 ```bash
-$ src/shoot/examples/basics_bb.clj
+$ src/fire/examples/basics_bb.clj
 hello ([])
 No docstrings
 
@@ -96,28 +96,28 @@ No docstrings
 
 ```
 
-`shoot` gives you the list of public functions with its arg-list and docstrings. (or "No docstrings" if docstrings not found)  
+`fire` gives you the list of public functions with its arg-list and docstrings. (or "No docstrings" if docstrings not found)  
 
 Next, let's call `add` which has multi-arity.
 
 ```bash
-$ src/shoot/examples/basics_bb.clj add 2 3
+$ src/fire/examples/basics_bb.clj add 2 3
 5
-$ src/shoot/examples/basics_bb.clj add "[2 3]"
+$ src/fire/examples/basics_bb.clj add "[2 3]"
 5
 ```
 
 Nothing special? Right, but note that the arguments passed to `add` are cast properly.  
 All arguments from CLI are parsed as string, so you need to cast the type of the vars if needed.  
-With `shoot`, as it's done under the food, you no longer need to be bothered by type casting.  
+With `fire`, as it's done under the food, you no longer need to be bothered by type casting.  
 To handle other types (vec, list or map), see the References.
 
 `area` will be another good example to see how to pass a map.
 
 ```bash
-$ src/shoot/examples/basics_bb.clj area --x=2 --y=3
+$ src/fire/examples/basics_bb.clj area --x=2 --y=3
 6
-$ src/shoot/examples/basics_bb.clj area "{:x 2 :y 3}"
+$ src/fire/examples/basics_bb.clj area "{:x 2 :y 3}"
 6
 ```
 
@@ -129,7 +129,7 @@ The second case takes a different way. It passes the string "{:x 2 :y 3}" and th
 As the last example, let's take a look of the case that contains both positional args and options.
 
 ```bash
-$ src/shoot/examples/basics_bb.clj echo 1 "[1 2 3]" "{:x 4 :y 5}" -x=6 --y="[7 8 9]" -z="{:a foo}"
+$ src/fire/examples/basics_bb.clj echo 1 "[1 2 3]" "{:x 4 :y 5}" -x=6 --y="[7 8 9]" -z="{:a foo}"
 (1 [1 2 3] {:x 4, :y 5} {:x 6, :y [7 8 9], :z {:a foo}})
 ```
 
@@ -137,20 +137,20 @@ Some edge cases are covered in the following section, plese look over them.
 
 ## Usage
 
-`shoot` gives you several features.
+`fire` gives you several features.
 
 ### Listing callable functions
 
-To get the list of fuctions, just call `shoot` witout arguments.
+To get the list of fuctions, just call `fire` witout arguments.
 
 ```clojure
-(shoot)
+(fire)
 ```
 
 and passes no parameters from CLI, then the list of available functions are shown with arg-list and docstrings (if it exists).
 
 ```bash
-$ src/shoot/examples/basics_bb.clj
+$ src/fire/examples/basics_bb.clj
 hello ([])
 No docstrings
 
@@ -173,45 +173,45 @@ No docstrings
 
 ### With no args
 
-This is the simplest/esiest way to go. Just call `shoot` in your program.
+This is the simplest/esiest way to go. Just call `fire` in your program.
 
 ```clojure
-(shoot)
+(fire)
 ```
 
 Then specify a target function name and pass arguments from CLI as needed. If no args are given, the list of callable functions will be printed as described above.
 
 ### With fn name
 
-If you want to call a specific function with arbitrary arguments, call `shoot` with the function name, symbol or keyword.
+If you want to call a specific function with arbitrary arguments, call `fire` with the function name, symbol or keyword.
 
 ```clojure
-(shoot 'echo)
-(shoot "echo")
-(shoot :echo)
+(fire 'echo)
+(fire "echo")
+(fire :echo)
 ```
 
 and passes any arguments from CLI according to the signature of the target function.
 
 ```bash
-$ src/shoot/examples/basics_bb.clj foo -x
+$ src/fire/examples/basics_bb.clj foo -x
 (foo {:x nil})
 ```
 
 You can also specify a function name with a map.
 
 ```clojure
-(shoot {:fn 'echo})
+(fire {:fn 'echo})
 ```
 
 ### Command line arguments
 
-Although `shoot` is desinged to cover many common cases, as there are lots of variations, it's difficult to cover all cases.  
+Although `fire` is desinged to cover many common cases, as there are lots of variations, it's difficult to cover all cases.  
 Here is a good example of how some basic data types are parsed.
-(Assuming `(shoot 'echo)` is put in your program)
+(Assuming `(fire 'echo)` is put in your program)
 
 ```bash
-$ src/shoot/examples/basics_bb.clj 1 "[1 2 3]" "{:x 4 :y 5}" -a --b -x=6 --y="[7 8 9]" -z="{:a foo}"
+$ src/fire/examples/basics_bb.clj 1 "[1 2 3]" "{:x 4 :y 5}" -a --b -x=6 --y="[7 8 9]" -z="{:a foo}"
 (1 [1 2 3] {:x 4, :y 5} {:a nil :b nil :x 6, :y [7 8 9], :z {:a foo}})
 ```
 
@@ -219,39 +219,39 @@ No confusion, isn't it? but I might have to explain a bit about the options.
 
 All arguments which do not have hyphens are treated as positional arguments. The order of the params are kept and passed to your target function. An exception will be thrown if there are inconsistencies between the number of positional args and the signature/arity of target functions.
 
-As you can see in the above example, you can pass any type of data by wrapping the values with `"..."`. `shoot` casts the type appropriately. But how?  
-`shoot` uses `clojure.edn/read-string` to parse arguments. If the args follow the spec of edn, they are transformed properly, but if it's not edn data (e.g. JSON), it falls back to plain string. For example, `{"foo": 123}` is JSON data and not valid edn data (you'll get an error when you eval it in your repl). `shoot` tries to parse it with `clojure.edn/read-string` but fails, then handle it as string. Here are some examples that might cause problems.
+As you can see in the above example, you can pass any type of data by wrapping the values with `"..."`. `fire` casts the type appropriately. But how?  
+`fire` uses `clojure.edn/read-string` to parse arguments. If the args follow the spec of edn, they are transformed properly, but if it's not edn data (e.g. JSON), it falls back to plain string. For example, `{"foo": 123}` is JSON data and not valid edn data (you'll get an error when you eval it in your repl). `fire` tries to parse it with `clojure.edn/read-string` but fails, then handle it as string. Here are some examples that might cause problems.
 
 ```bash
-$ src/shoot/examples/basics_bb.clj "1,2,3" "\"1,2,3\"" ",,," " " "\" \""
+$ src/fire/examples/basics_bb.clj "1,2,3" "\"1,2,3\"" ",,," " " "\" \""
 (1 1,2,3 nil nil  )
 ```
 
 Options with `-` or `--` are used as keys in a map. (The number of hyphens doesn't matter)
 
 ```bash
-$ src/shoot/examples/basics_bb.clj -x --y
+$ src/fire/examples/basics_bb.clj -x --y
 {:x nil :y nil}
 ```
 
 If you want to associate values to the keys, you NEED to use `=` and white spaces ` ` are not allowed . "not allowed" means that it brings unexpected results to you (but works).
 
 ```bash
-$ src/shoot/examples/basics_bb.clj -x=1 --y 2 -z
+$ src/fire/examples/basics_bb.clj -x=1 --y 2 -z
 {2 :x 1 :y nil :z nil}
 ```
 
 When the same options appear several times, they are merged into the same key. (Again, the number of hyphens doesn't matter)
 
 ```bash
-$ src/shoot/examples/basics_bb.clj -x=1 --y=2 --x=2 -z=foo --x="[9 8 7]"
+$ src/fire/examples/basics_bb.clj -x=1 --y=2 --x=2 -z=foo --x="[9 8 7]"
 ({:x (1 2 [9 8 7]), :y 2, :z foo})
 ```
 
 The following example might confuse you a bit.
 
 ```bash
-$ src/shoot/examples/basics_bb.clj "{:x 1 :y 2}" -x=1 --y=2
+$ src/fire/examples/basics_bb.clj "{:x 1 :y 2}" -x=1 --y=2
 ({:x 1, :y 2} {:x 1, :y 2})
 
 ```
@@ -268,7 +268,7 @@ Before having your own one, let's look at the default parser.
 [[#".+" #(clojure.edn/read-string %)]]
 ```
 
-The parsers consists of items (only 1 item is there by default though) and each item must have a regex pattern and a function. `shoot` apllies the pattern to all values and call the function if the pattern matches. The function must take 1 argument which is a string that matched the pattern. By default, the pattern matches all values and parsed by `read-string`. If a value cannot be parsed, then it is treated as string. Like this.
+The parsers consists of items (only 1 item is there by default though) and each item must have a regex pattern and a function. `fire` apllies the pattern to all values and call the function if the pattern matches. The function must take 1 argument which is a string that matched the pattern. By default, the pattern matches all values and parsed by `read-string`. If a value cannot be parsed, then it is treated as string. Like this.
 
 ```clojure
 (try
@@ -279,13 +279,13 @@ The parsers consists of items (only 1 item is there by default though) and each 
 You can customize the parser anyway you want by using `parsers` parameter. The default behavior is equivalent to the following code.
 
 ```clojure
-(shoot {:parsers [[#".+" #(clojure.edn/read-string %)]]})
+(fire {:parsers [[#".+" #(clojure.edn/read-string %)]]})
 ```
 
 If you want to handle data which contains commas as string, another item should be added before the default one.
 
 ```clojure
-(shoot {:fn 'echo
+(fire {:fn 'echo
         :parsers [[#".*,.*" #(identity %)]
                   [#".+" #(clojure.edn/read-string %)]]})
 ```
@@ -293,12 +293,12 @@ If you want to handle data which contains commas as string, another item should 
 The result should be
 
 ```bash
-$ src/shoot/examples/basics_bb.clj "1,2,3" "\"1,2,3\"" ",,," " " "\" \""
+$ src/fire/examples/basics_bb.clj "1,2,3" "\"1,2,3\"" ",,," " " "\" \""
 (1,2,3 "1,2,3" ,,, nil  )
 ```
 
 The order of items is important.   
-`shoot` uses the items in order from top to bottom and once a pattern matches, the following patters are not used. So if your parser is like this
+`fire` uses the items in order from top to bottom and once a pattern matches, the following patters are not used. So if your parser is like this
 
 ```clojure
 [[#".+" #(clojure.edn/read-string %)]
@@ -311,13 +311,13 @@ Note that even if a value is invalid for the first item, that will be just treat
 It's also allowed to have no parsers. (don't pass `nil` but a list or vector)
 
 ```clojure
-(shoot {:parsers []})
+(fire {:parsers []})
 ```
 
 Then a white space is passed as it is.
 
 ```bash
-# src/shoot/examples/basics_bb.clj echo " "
+# src/fire/examples/basics_bb.clj echo " "
 ( )
 ```
 
@@ -327,7 +327,7 @@ T.B.D
 
 ## License
 
-Copyright © 2020 Koji Takahashi
+Copyright © 2021 Koji Takahashi
 
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License 2.0 which is available at

@@ -1,15 +1,15 @@
-(ns shoot.examples.basics
-  (:require [shoot.core :refer [shoot]]))
+(ns fire.examples.basics-main
+  (:require
+    [fire.core :refer [fire]]))
 
-;; lein exec -p src/shoot/examples/basics.clj
+;; bb -cp src -m fire.examples.basics-main
+;; clj -m fire.examples.basics-main
 
 (defn hello
-  "Say hello!!"
   []
   (println "hello"))
 
 (defn hello-world
-  "Target can be spcecified with :name"
   [& {:keys [name]
       :or {name "World"}}]
   (println "Hello " name))
@@ -30,6 +30,8 @@
   [& opts]
   (println opts))
 
-(when-let [v (shoot)]
-  (println v))
+(defn -main
+  [& args]
+  (when-let [v (fire)]
+    (println v)))
 
