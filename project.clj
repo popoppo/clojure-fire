@@ -11,7 +11,7 @@
                                     :password :env/clojars_password
                                     :sign-releases false}]]
 
-  :plugins []
+  :plugins [[lein-exec "0.3.7"]]
 
   :src-paths ["src"]
   :test-paths ["test"])
