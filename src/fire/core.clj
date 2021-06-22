@@ -79,25 +79,30 @@
   (let [bb-main (System/getProperty "babashka.main")
         cmd (System/getProperty "sun.java.command")
         cmd-list (when cmd (str/split cmd #" +"))
-        target-ns (cond
-                    ;; bb -m
-                    bb-main (symbol bb-main)
+        target-info (cond
+                      ;; bb -m
+                      bb-main {:ns (symbol bb-main)
+                               :main true}
 
-                    ;; bb -f or lein exec
-                    (or
-                      (System/getProperty "babashka.version")
-                      (System/getenv "LEIN_JAVA_CMD")) *ns* ;; lein
+                      ;; bb -f or lein exec
+                      (or
+                       (System/getProperty "babashka.version")
+                       (System/getenv "LEIN_JAVA_CMD"))
+                      {:ns *ns* ;; lein
+                       :main false}
 
-                    ;; clj -m/--main
-                    :else
-                    (let [i (count *command-line-args*)
-                          run-cmd (drop-last i cmd-list)
-                          _ (prn run-cmd)
-                          idx-of-m (.indexOf run-cmd (some #{"-m" "--main"} run-cmd))]
-                      (symbol (nth run-cmd (inc idx-of-m)))))]
-    (-> target-ns
+                      ;; clj -m/--main
+                      :else
+                      (let [i (count *command-line-args*)
+                            run-cmd (drop-last i cmd-list)
+                            idx (.indexOf run-cmd (some #{"-m" "--main"} run-cmd))]
+                        {:ns (symbol (nth run-cmd (inc idx)))
+                         :main true}))]
+    (-> (:ns target-info)
         ns-publics
-        (dissoc 'fire))))
+        (dissoc 'fire)
+        (cond->
+         (:main target-info) (dissoc '-main)))))
 
 (defn print-func-names
   "Print list of fn names and its doc"
