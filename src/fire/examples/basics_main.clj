@@ -35,6 +35,5 @@
 
 (defn -main
   [& args]
-  (when-let [v (fire)]
-    (println v)))
+  (fire))
 

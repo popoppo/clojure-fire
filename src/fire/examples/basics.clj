@@ -2,7 +2,7 @@
   (:require
    [fire.core :refer [fire]]))
 
-;; lein exec -p src/clojure_fire/examples/basics.clj
+;; lein exec -p src/fire/examples/basics.clj
 
 (defn hello
   "Say hello!!"
@@ -32,6 +32,5 @@
   [& opts]
   (println opts))
 
-(when-let [v (fire)]
-  (println v))
+(fire)
 

@@ -1,9 +1,11 @@
 #!/usr/bin/env bb
 
-;; export BABASHKA_CLASSPATH=src
-
 (ns fire.examples.basics-bb
-  (:require [fire.core :refer [fire]]))
+  (:require
+   [babashka.deps :as deps]))
+
+(deps/add-deps '{:deps {org.clojars.popoppo/clojure-fire {:mvn/version "0.0.4"}}})
+(require '[fire.core :refer [fire]])
 
 (defn hello
   "Say hello!!"
@@ -33,5 +35,4 @@
   [& opts]
   (println opts))
 
-(when-let [v (fire)]
-  (println v))
+(fire)
