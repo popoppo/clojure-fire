@@ -1,8 +1,8 @@
 (ns fire.core-test
   (:require
-    [clojure.edn :as edn]
-    [clojure.test :refer [are deftest testing]]
-    [fire.core :as fire :refer [fire]]))
+   [clojure.edn :as edn]
+   [clojure.test :refer [are deftest testing]]
+   [fire.core :as fire :refer [fire]]))
 
 (defn hello
   []
@@ -78,17 +78,17 @@
 
       (testing "With custom parsers"
         (let [enhanced-parsers (concat
-                                 [[#"(?i)false" (fn [_] false)]]
-                                 fire/default-parsers)
+                                [[#"(?i)false" (fn [_] false)]]
+                                fire/default-parsers)
               wrong-order-parsers (concat
-                                    fire/default-parsers ;; this will catch all
-                                    [[#"(?i)false" (fn [_] false)]])
+                                   fire/default-parsers ;; this will catch all
+                                   [[#"(?i)false" (fn [_] false)]])
               no-parsers []]
           (testing "via args"
             (are [orig parsers args] (= orig
                                         (do
                                           (set! *command-line-args* args)
-                                          (fire 'is-that-true? parsers)))
+                                          (fire 'is-that-true? {:parsers parsers})))
               (is-that-true? false) enhanced-parsers ["False"]
               (is-that-true? true) wrong-order-parsers ["False"]
               ;; "false" is passed as string without parsers.
