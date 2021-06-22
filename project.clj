@@ -1,4 +1,4 @@
-(defproject org.clojars.popoppo/clojure-fire "0.0.4"
+(defproject org.clojars.popoppo/clojure-fire "0.0.5-SNAPSHOT"
   :description "Making it easier to run Clojure program"
   :url "https://github.com/popoppo/clojure-fire"
   :license {:name "EPL-2.0"
@@ -11,7 +11,7 @@
                                     :password :env/clojars_password
                                     :sign-releases false}]]
 
-  :plugins []
+  :plugins [[lein-exec "0.3.7"]]
 
   :src-paths ["src"]
   :test-paths ["test"])

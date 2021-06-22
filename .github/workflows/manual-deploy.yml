@@ -1,0 +1,14 @@
+name: Manual deploy
+
+on: [ workflow_dispatch ]
+
+jobs:
+  deploy_to_clojars:
+    runs-on: ubuntu-latest
+    env:
+      CLOJARS_USERNAME: popoppo
+      CLOJARS_PASSWORD: ${{ secrets.CLOJARS_DEPLOY_TOKEN }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Deploy to Clojars
+      run: lein deploy clojars

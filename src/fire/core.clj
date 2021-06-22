@@ -1,7 +1,7 @@
 (ns fire.core
   (:require
-    [clojure.edn :as edn]
-    [clojure.string :as str]))
+   [clojure.edn :as edn]
+   [clojure.string :as str]))
 
 (def default-parsers
   [[#".+" #(edn/read-string %)]])
@@ -40,11 +40,11 @@
 (defn parse-arg-list
   [arg-list]
   (reduce
-    (fn [acc v]
-      (->> (parse-value v)
-           (merge-with into acc)))
-    {}
-    arg-list))
+   (fn [acc v]
+     (->> (parse-value v)
+          (merge-with into acc)))
+   {}
+   arg-list))
 
 (defn parse-command-line-args
   [args-has-func-name? & {:keys [custom-parsers]
@@ -79,25 +79,30 @@
   (let [bb-main (System/getProperty "babashka.main")
         cmd (System/getProperty "sun.java.command")
         cmd-list (when cmd (str/split cmd #" +"))
-        target-ns (cond
-                    ;; bb -m
-                    bb-main (symbol bb-main)
+        target-info (cond
+                      ;; bb -m
+                      bb-main {:ns (symbol bb-main)
+                               :main true}
 
-                    ;; bb -f or lein exec
-                    (or
-                      (System/getProperty "babashka.version")
-                      (System/getenv "LEIN_JAVA_CMD")) *ns* ;; lein
+                      ;; bb -f or lein exec
+                      (or
+                       (System/getProperty "babashka.version")
+                       (System/getenv "LEIN_JAVA_CMD"))
+                      {:ns *ns* ;; lein
+                       :main false}
 
-                    ;; clj -m/--main
-                    :else
-                    (let [i (count *command-line-args*)
-                          run-cmd (drop-last i cmd-list)
-                          _ (prn run-cmd)
-                          idx-of-m (.indexOf run-cmd (some #{"-m" "--main"} run-cmd))]
-                      (symbol (nth run-cmd (inc idx-of-m)))))]
-    (-> target-ns
+                      ;; clj -m/--main
+                      :else
+                      (let [i (count *command-line-args*)
+                            run-cmd (drop-last i cmd-list)
+                            idx (.indexOf run-cmd (some #{"-m" "--main"} run-cmd))]
+                        {:ns (symbol (nth run-cmd (inc idx)))
+                         :main true}))]
+    (-> (:ns target-info)
         ns-publics
-        (dissoc 'fire))))
+        (dissoc 'fire)
+        (cond->
+         (:main target-info) (dissoc '-main)))))
 
 (defn print-func-names
   "Print list of fn names and its doc"
@@ -129,27 +134,30 @@
       (println func-name "not found. Speccify one of" func-names))))
 
 (defn fire*
-  "Assumed to be called by 'fire'"
+  "Called by 'fire'"
   ([]
    (let [{:keys [fn positional-args options]} (parse-command-line-args true)]
      (if (every? nil? [positional-args options])
-       (println "function-name must be specified")
+       (println "function name must be specified")
        (apply-func fn positional-args options))))
   ([arg]
    (condp #(%1 %2) arg
-     map? (let [custom-parsers (or (:parsers arg) default-parsers)
+     map? (let [parsers (:parsers arg default-parsers)
                 cl-has-func-name? (if (:fn arg) false true)
                 parsed (parse-command-line-args cl-has-func-name?
-                                                :custom-parsers custom-parsers)
+                                                :custom-parsers parsers)
                 {:keys [fn positional-args options]} parsed
                 func-name (if fn fn (symbol (:fn arg)))]
             (if (nil? func-name)
-              (println "function-name must be specified")
+              (println "function name must be specified")
               (apply-func func-name positional-args options)))
+     ;; else: arg should be function name
      (let [{:keys [positional-args options]} (parse-command-line-args false)]
        (apply-func (symbol arg) positional-args options))))
-  ([func-name parsers]
-   (fire* {:fn func-name :parsers parsers})))
+  ([func-name conf-map]
+   (let [arg-map (-> {:fn func-name}
+                     (assoc :parsers (:parsers conf-map default-parsers)))]
+     (fire* arg-map))))
 
 (defn fire
   "Entry point"
