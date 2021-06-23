@@ -11,7 +11,7 @@
   (println "hello"))
 
 (defn hello-world
-  "Target can be spcecified with :name"
+  "Target can be specified with :name"
   [& {:keys [name]
       :or {name "World"}}]
   (println "Hello " name))

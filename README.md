@@ -1,11 +1,11 @@
-![Clojure CI](https://github.com/popoppo/clojure-fire/workflows/Clojure%20CI/badge.svg)
+![CI](https://github.com/popoppo/clojure-fire/workflows/CI/badge.svg)
 
 # clojure-fire
 
 This makes it easy to create and run CLI tools in Clojure without any configuration.  
 The idea and name are coming from [python-fire](https://github.com/google/python-fire).
 
-## What's that?
+## How does it work?
 
 Let's say you have a function to run via `-main`,
 
@@ -40,6 +40,8 @@ $ bb -m <path to file> multiply 2 3 ;; or "clj -m <path to file> ..."
 ```
 
 So, all you need to do is just calling `(fire)` in your program and run it with a function name and args on a command line. Then `fire` finds the target function and calls it with the given arguments. You don't need any configuration.  
+
+More details are found on wiki.
 
 `fire` works with `clj`, [lein-exec](https://github.com/kumarshantanu/lein-exec) and [babashka](https://github.com/borkdude/babashka).  
 
