@@ -1,4 +1,4 @@
-![Clojure CI](https://github.com/popoppo/clojure-fire/workflows/Clojure%20CI/badge.svg)
+![CI](https://github.com/popoppo/clojure-fire/workflows/CI/badge.svg)
 
 # clojure-fire
 
