@@ -37,6 +37,8 @@ jobs:
         lein deploy clojars
         git fetch origin dev
         git checkout dev
-        lein change leiningen.release/bump-version patch
+        lein change version leiningen.release/bump-version patch
+        # '-SNAPSHOT' isn't used
+        lein change version leiningen.release/bump-version release
         lein vcs commit
         lein vcs push
