@@ -35,5 +35,8 @@ jobs:
         lein vcs tag --no-sign
         lein vcs push
         lein deploy clojars
+        git fetch origin dev
         git checkout dev
         lein change leiningen.release/bump-version patch
+        lein vcs commit
+        lein vcs push
