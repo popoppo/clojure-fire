@@ -30,6 +30,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - run: |
+        git config --global user.email "popoppo39@gmail.com"
+        git config --global user.name "popoppo"
         lein vcs tag
         lein vcs push
         lein deploy clojars
