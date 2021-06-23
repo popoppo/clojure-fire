@@ -20,7 +20,7 @@ jobs:
     - name: Run tests
       run: lein test
 
-  deploy_to_clojars:
+  tagging_and_deploy:
     if: github.ref == 'refs/heads/main'
     needs: unit_test
     runs-on: ubuntu-latest
@@ -29,5 +29,9 @@ jobs:
       CLOJARS_PASSWORD: ${{ secrets.CLOJARS_DEPLOY_TOKEN }}
     steps:
     - uses: actions/checkout@v2
-    - name: Deploy to Clojars
-      run: lein deploy clojars
+    - run: |
+        lein vcs tag
+        lein vcs push
+        lein deploy clojars
+        git checkout dev
+        lein change leiningen.release/bump-version patch
