@@ -1,4 +1,4 @@
-(defproject com.github.popoppo/clojure-fire "0.0.9"
+(defproject com.github.popoppo/clojure-fire "0.0.10"
   :description "Making it easier to run Clojure program"
   :url "https://github.com/popoppo/clojure-fire"
   :license {:name "EPL-2.0"
